@@ -18,6 +18,10 @@
           @role('Admin') --}}
             <li class="menu-header">Master Data</li>
             <li class="nav-item">
+              <a href="{{ route('books.index') }}" class="nav-link"><i class="fas fa-book"></i>
+              <span>Books</span></a>
+          </li>
+            <li class="nav-item">
                 <a href="{{ route('users.index') }}" class="nav-link"><i
                         class="fas fa-database"></i><span>User</span></a>
             </li>

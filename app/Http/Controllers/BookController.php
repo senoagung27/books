@@ -15,7 +15,7 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::all();
-        return view('books.index', compact('books'));
+        return view('pages.books.index', compact('books'));
     }
 
     /**
@@ -25,7 +25,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('books.create');
+        return view('pages.books.create');
     }
 
     /**
@@ -42,9 +42,9 @@ class BookController extends Controller
             'slugs' => 'required|unique:books,slugs',
             'author' => 'required',
         ]);
-    
+
         Book::create($validated);
-    
+
         return redirect()->route('books.index')->with('success', 'Book created successfully.');
     }
 
@@ -56,7 +56,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        return view('books.show', compact('book'));
+        return view('pages.books.show', compact('book'));
     }
 
     /**
@@ -67,7 +67,8 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        return view('books.edit', compact('book'));
+        $book = Book::findOrFail($id); // Fetch the book by ID or throw a 404 if not found
+        return view('pages.books.edit', compact('book'));
     }
 
     /**
@@ -77,19 +78,18 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $book)
-    {
-        $validated = $request->validate([
-            'name' => 'required',
-            'years' => 'required|integer',
-            'slugs' => 'required|unique:books,slugs,'.$book->id,
-            'author' => 'required',
-        ]);
-    
-        $book->update($validated);
-    
-        return redirect()->route('books.index')->with('success', 'Book updated successfully.');
-    }
+    public function update(Request $request, $id)
+{
+    $book = Book::find($id);
+    $book->name = $request->input('name');
+    $book->years = $request->input('years');
+    $book->slugs = $request->input('slugs');
+    $book->author = $request->input('author');
+    // Update other fields as needed
+    $book->save();
+
+    return redirect()->route('books.index')->with('success', 'Book updated successfully');
+}
 
     /**
      * Remove the specified resource from storage.
@@ -99,7 +99,12 @@ class BookController extends Controller
      */
     public function destroy($book)
     {
+        $book = Book::findOrFail($book); // This will retrieve the model instance or throw a 404 error
+
+        // Now you can safely delete the book
         $book->delete();
+
+        // Redirect to the books page with success message
         return redirect()->route('books.index')->with('success', 'Book deleted successfully.');
     }
 }

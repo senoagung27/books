@@ -6,7 +6,8 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\StokFFController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PermissionsController;
-use App\Http\Controllers\StokJubelioController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\PostsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,9 +114,20 @@ Route::group([ "middleware" => ['auth:sanctum', config('jetstream.auth_session')
         Route::patch('/{post}/update', 'PostsController@update')->name('posts.update');
         Route::delete('/{post}/delete', 'PostsController@destroy')->name('posts.destroy');
     });
+    Route::group(['prefix' => 'books'], function() {
+        Route::get('/', [ BookController::class, 'index'])->name('books.index');
+        Route::get('/create', [BookController::class, 'create'])->name('books.create');
+        Route::post('/create', [BookController::class, 'store'])->name('books.store');
+        Route::get('/{post}/show', [BookController::class, 'show'])->name('books.show');
+        Route::get('/{post}/edit', [BookController::class, 'edit'])->name('books.edit');
+        Route::patch('/books/{id}/update', [BookController::class, 'update'])->name('books.update');
+        Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
+
+    });
 
     Route::resource('roles', RolesController::class);
     Route::resource('permissions', PermissionsController::class);
+    // Route::resource('books', BookController::class);
     // Route::get('/StokJubelio', [ StokJubelioController::class, "index" ])->name('stokjubelio');
     // Route::get('/StokFF', [ StokFFController::class, "index" ])->name('stokff');
     // Route::get('/storeff', [ StokFFController::class, "store" ]);
